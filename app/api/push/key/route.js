@@ -1,0 +1,1 @@
+import {ok,fail} from '@/lib/api';export async function GET(){if(!process.env.VAPID_PUBLIC_KEY)return fail('Configura VAPID_PUBLIC_KEY no servidor.',503);return ok({publicKey:process.env.VAPID_PUBLIC_KEY})}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 112" role="img" aria-labelledby="title">
+  <title id="title">NUCLEO</title>
+  <g transform="translate(8 8)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 68C20 39 43 16 72 16c19 0 35 10 44 26" stroke="#F2F0E8" stroke-width="12"/>
+    <path d="M116 42c9 16 9 36 0 52-14 25-46 34-71 20" stroke="#D7D5FF" stroke-width="12"/>
+    <path d="M45 114C20 100 11 68 25 43 36 23 57 12 79 15" stroke="#E9EFA6" stroke-width="12"/>
+    <path d="M43 35l49 60M91 35L43 95" stroke="#F2F0E8" stroke-width="8" opacity=".92"/>
+    <circle cx="72" cy="16" r="8" fill="#E9EFA6" stroke="none"/>
+    <circle cx="116" cy="94" r="8" fill="#D7D5FF" stroke="none"/>
+    <circle cx="20" cy="68" r="8" fill="#F2F0E8" stroke="none"/>
+  </g>
+  <text x="150" y="77" fill="#F4F2EA" font-family="Arial, Helvetica, sans-serif" font-size="59" font-weight="800" letter-spacing="9">NUCLEO</text>
+</svg>
