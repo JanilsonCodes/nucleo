@@ -1,3 +1,7 @@
 "use client";
-import Link from "next/link";import {useState} from "react";import {useRouter} from "next/navigation";
+import Link from "next/link";
+import {useState} from "react";
+import {useRouter} from "next/navigation";
+
 export default function Login(){const [username,U]=useState("");const [password,P]=useState("");const [error,E]=useState("");const [busy,B]=useState(false);const router=useRouter();async function submit(e){e.preventDefault();E("");B(true);try{const r=await fetch("/api/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});const d=await r.json();if(!r.ok)throw Error(d.error);router.push("/dashboard");router.refresh()}catch(x){E(x.message)}finally{B(false)}}return <main className="auth-wrap"><form className="auth-card" onSubmit={submit}><div className="brand"><img src="/nucleo-brand.svg" alt="NUCLEO"/></div><h1>Bem-vindo de volta</h1><p className="muted" style={{textAlign:"center"}}>Entra na tua área de trabalho.</p>{error&&<div className="notice">{error}</div>}<div className="field"><label>Nome de utilizador</label><input autoComplete="username" value={username} onChange={e=>U(e.target.value)} required/></div><div className="field"><label>Palavra-passe</label><input type="password" autoComplete="current-password" value={password} onChange={e=>P(e.target.value)} required/></div><button className="btn full" disabled={busy}>{busy?"A entrar…":"Entrar"}</button><p className="muted" style={{textAlign:"center",marginTop:20}}>Ainda não tens conta? <Link className="link" href="/registar">Criar conta</Link></p><p style={{textAlign:"center"}}><Link className="link" href="/">Voltar ao início</Link></p></form></main>}
+//tipo
