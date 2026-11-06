@@ -1496,3 +1496,9 @@ img {
   color: #e9efa6 !important;
 }
 .pwa-install-button { font-family: inherit; }
+
+.page-head div{
+  margin-bottom: 20px;
+}
+
+/*page-head*/
