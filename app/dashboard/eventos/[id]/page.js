@@ -1,170 +1,26 @@
-
 "use client";
-
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-
-export default function EventDetail() {
-  const { id } = useParams();
-  const [e, E] = useState(null);
-  const [history, H] = useState([]);
-  const [error, X] = useState("");
-
-  async function load() {
-    const [a, b] = await Promise.all([
-      fetch("/api/events/" + id),
-      fetch("/api/events/" + id + "/history")
-    ]);
-
-    const ad = await a.json();
-    const bd = await b.json();
-
-    if (!a.ok) X(ad.error);
-    else E(ad.event);
-
-    H(bd.history || []);
-  }
-
-  useEffect(() => {
-    if (id) load();
-  }, [id]);
-
-  async function cancel() {
-    if (!confirm("Cancelar este evento?")) return;
-
-    const r = await fetch("/api/events/" + id, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ estado: "cancelado" })
-    });
-
-    const d = await r.json();
-
-    if (!r.ok) X(d.error);
-    else load();
-  }
-
-  if (!e) {
-    return (
-      <div className="event-loading">
-        {error || "A carregar evento…"}
-        <Link href="/dashboard/eventos">Voltar</Link>
-      </div>
-    );
-  }
-
-  return (
-    <div className="event-detail-page">
-
-      <div className="page-head">
-        <div>
-          <div className="eyebrow">Detalhe do evento</div>
-          <h1>{e.nome_evento}</h1>
-          <p>
-            {e.zona} · <span className="pill blue">{e.estado}</span>
-          </p>
-        </div>
-
-        <div className="event-actions">
-          <Link
-            href="/dashboard/minhas-tarefas"
-            className="btn event-task-btn"
-          >
-            <span>✓</span> Ver as minhas tarefas
-          </Link>
-
-          <button className="btn danger" onClick={cancel}>
-            Cancelar evento
-          </button>
-        </div>
-      </div>
-
-      <div className="event-info-banner">
-        <div className="event-banner-icon">📅</div>
-        <div>
-          <strong>Não te esqueças da tua participação</strong>
-          <p>
-            Consulta as tuas tarefas para aceitar ou rejeitar
-            a participação neste evento.
-          </p>
-        </div>
-
-        <Link href="/dashboard/minhas-tarefas" className="event-banner-link">
-          Consultar →
-        </Link>
-      </div>
-
-      <div className="columns">
-
-        <section className="panel event-information">
-          <h2>Informações</h2>
-
-          <p>{e.descricao || "Sem descrição."}</p>
-
-          <div className="event-date">
-            <span>Início</span>
-            <strong>
-              {new Date(e.inicio).toLocaleString("pt-PT")}
-            </strong>
-          </div>
-
-          <div className="event-date">
-            <span>Fim</span>
-            <strong>
-              {new Date(e.fim).toLocaleString("pt-PT")}
-            </strong>
-          </div>
-
-          <h2>As minhas atribuições / equipa</h2>
-
-          {(e.assignments || []).map(a => (
-            <div className="list-item" key={a.id}>
-              <div>
-                <strong>
-                  {a.private_name || "Atribuição"}
-                </strong>
-
-                <small>
-                  {a.private_funcao || "Função não definida"}
-                  {" · "}
-                  {a.private_materiais || "Sem materiais"}
-                  {" · "}
-                  Resposta: {a.resposta || "—"}
-
-                  {a.motivo_rejeicao
-                    ? " · Motivo: " + a.motivo_rejeicao
-                    : ""}
-                </small>
-              </div>
-
-              <span className="pill">{a.estado}</span>
-            </div>
-          ))}
-        </section>
-
-        <section className="panel event-history">
-          <h2>Histórico</h2>
-
-          {history.map(h => (
-            <div className="list-item" key={h.id}>
-              <div>
-                <strong>{h.acao}</strong>
-                <small>
-                  {new Date(h.created_at).toLocaleString("pt-PT")}
-                </small>
-              </div>
-            </div>
-          ))}
-
-          {!history.length && (
-            <div className="empty">
-              Ainda não existem registos no histórico.
-            </div>
-          )}
-        </section>
-
-      </div>
-    </div>
-  );
+import {useParams} from 'next/navigation';
+import {useEffect,useState} from 'react';
+import Link from 'next/link';
+const cvInput=(v)=>v?new Date(new Date(v).getTime()-3600000).toISOString().slice(0,16):'';
+const isoCV=(v)=>v?new Date(v+'-01:00').toISOString():'';
+export default function EventDetail(){
+ const {id}=useParams(); const [event,setEvent]=useState(null),[history,setHistory]=useState([]),[members,setMembers]=useState([]),[form,setForm]=useState({}),[selected,setSelected]=useState(''),[funcao,setFuncao]=useState(''),[materiais,setMateriais]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[success,setSuccess]=useState(''),[isManager,setIsManager]=useState(false);
+ async function load(){setError('');const [a,b,c]=await Promise.all([fetch('/api/events/'+id),fetch('/api/events/'+id+'/history'),fetch('/api/auth/session')]);const ad=await a.json(),bd=await b.json(),cd=await c.json();if(!a.ok)throw new Error(ad.error||'Erro ao carregar evento');setEvent(ad.event);setForm({nome_evento:ad.event.nome_evento||'',descricao:ad.event.descricao||'',zona:ad.event.zona||'',inicio:cvInput(ad.event.inicio),fim:cvInput(ad.event.fim)});setHistory(bd.history||[]);const me=cd.user||cd.session||cd.account||cd;const manager=me?.role==='gerente';setIsManager(manager);if(manager){const r=await fetch('/api/memberships?empresa_id='+ad.event.empresa_id);const d=await r.json();setMembers((d.members||[]).filter(x=>x.estado==='aceite'));}}
+ useEffect(()=>{if(id)load().catch(e=>setError(e.message));},[id]);
+ async function request(url,method,body){setBusy(true);setError('');setSuccess('');try{const r=await fetch(url,{method,headers:{'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Operação não concluída');setSuccess('Alterações guardadas com sucesso.');await load();return d;}catch(e){setError(e.message);return null;}finally{setBusy(false);}}
+ async function save(e){e.preventDefault();if(new Date(form.fim)<=new Date(form.inicio)){setError('A data/hora de fim deve ser posterior ao início.');return;}await request('/api/events/'+id,'PATCH',{...form,inicio:isoCV(form.inicio),fim:isoCV(form.fim)});}
+ async function add(e){e.preventDefault();if(!selected)return;const d=await request('/api/events/'+id+'/assignments','POST',{funcionario_id:Number(selected),funcao,materiais});if(d){setSelected('');setFuncao('');setMateriais('');}}
+ async function remove(a){if(!confirm('Remover este colaborador do evento?'))return;await request('/api/assignments/'+a.id,'DELETE');}
+ async function editAssignment(a){const f=prompt('Função do colaborador:',a.funcao||'');if(f===null)return;const m=prompt('Materiais necessários:',a.materiais||'');if(m===null)return;await request('/api/assignments/'+a.id,'PATCH',{funcao:f,materiais:m});}
+ async function cancel(){if(!confirm('Cancelar este evento?'))return;await request('/api/events/'+id,'PATCH',{estado:'cancelado'});}
+ if(!event)return <main className="panel" style={{padding:24}}>{error||'A carregar evento…'} <Link href="/dashboard/eventos">Voltar</Link></main>;
+ const assigned=event.assignments||[], active=assigned.filter(a=>a.ativo!==false);
+ return <main className="event-detail-page"><div className="page-head"><div><div className="eyebrow">Gestão do evento</div><h1>{event.nome_evento}</h1><p>{event.zona} · <span className="pill blue">{event.estado}</span></p></div><Link className="btn secondary" href="/dashboard/calendario">Calendário</Link></div>
+ {error&&<div className="notice" role="alert">{error}</div>}{success&&<div className="notice">{success}</div>}
+ {isManager&&<form className="panel" onSubmit={save} style={{padding:20,marginBottom:18}}><h2>Editar informações</h2><div className="field"><label>Nome do evento *</label><input required value={form.nome_evento||''} onChange={e=>setForm({...form,nome_evento:e.target.value})}/></div><div className="field"><label>Descrição</label><textarea value={form.descricao||''} onChange={e=>setForm({...form,descricao:e.target.value})}/></div><div className="field"><label>Local *</label><input required value={form.zona||''} onChange={e=>setForm({...form,zona:e.target.value})}/></div><div className="grid2"><div className="field"><label>Início *</label><input required type="datetime-local" value={form.inicio||''} onChange={e=>setForm({...form,inicio:e.target.value})}/></div><div className="field"><label>Fim *</label><input required type="datetime-local" value={form.fim||''} onChange={e=>setForm({...form,fim:e.target.value})}/></div></div><button className="btn" disabled={busy}>{busy?'A guardar…':'Guardar alterações'}</button> <button type="button" className="btn danger" onClick={cancel} disabled={busy||event.estado==='cancelado'}>Cancelar evento</button></form>}
+ <div className="columns"><section className="panel" style={{padding:20}}><h2>Colaboradores ({active.length})</h2>{isManager&&<form onSubmit={add} className="panel" style={{padding:14,marginBottom:14}}><h3>Adicionar colaborador</h3><div className="field"><label>Colaborador</label><select value={selected} onChange={e=>setSelected(e.target.value)} required><option value="">Selecionar colaborador</option>{members.filter(m=>!active.some(a=>a.funcionario_id===m.funcionario_id)).map(m=><option key={m.funcionario_id} value={m.funcionario_id}>{m.conta?.full_name||m.funcionario_id}</option>)}</select></div><div className="grid2"><div className="field"><label>Função</label><input value={funcao} onChange={e=>setFuncao(e.target.value)}/></div><div className="field"><label>Materiais</label><input value={materiais} onChange={e=>setMateriais(e.target.value)}/></div></div><button className="btn" disabled={busy||!selected}>Adicionar</button></form>}
+ {active.map(a=><div className="list-item" key={a.id}><div><strong>{a.private_name||'Colaborador'}</strong><small>{a.funcao||a.private_funcao||'Função não definida'} · {a.materiais||a.private_materiais||'Sem materiais'} · {a.resposta||'Pendente'}</small></div>{isManager&&<div style={{display:'flex',gap:8}}><button className="btn secondary" type="button" onClick={()=>editAssignment(a)}>Editar</button><button className="btn danger" type="button" onClick={()=>remove(a)}>Remover</button></div>}</div>)}{!active.length&&<div className="empty">Ainda não há colaboradores atribuídos.</div>}</section>
+ <section className="panel" style={{padding:20}}><h2>Histórico</h2>{history.map(h=><div className="list-item" key={h.id}><div><strong>{h.acao}</strong><small>{new Date(h.created_at).toLocaleString('pt-PT')}</small></div></div>)}{!history.length&&<div className="empty">Sem registos.</div>}</section></div>
+ <section className="panel" style={{padding:20,marginTop:18}}><h2>Informações do evento</h2><p>{event.descricao||'Sem descrição.'}</p><p><b>Início:</b> {new Date(event.inicio).toLocaleString('pt-PT',{timeZone:'Atlantic/Cape_Verde'})}</p><p><b>Fim:</b> {new Date(event.fim).toLocaleString('pt-PT',{timeZone:'Atlantic/Cape_Verde'})}</p><Link href="/dashboard/minhas-tarefas" className="link">Ver as minhas tarefas</Link></section></main>;
 }

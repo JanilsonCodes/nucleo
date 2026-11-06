@@ -15,7 +15,7 @@ async function run(req) {
     let sent = 0, failed = 0, skipped = 0;
     for (const n of due || []) {
       // Evita lembretes para tarefas rejeitadas/removidas ou eventos cancelados.
-      if (n.evento_funcionario_id && ['lembrete_09','lembrete_15','lembrete_20','lembrete_dia','lembrete_2h'].includes(n.tipo)) {
+      if (n.evento_funcionario_id && ['lembrete_08','lembrete_09','lembrete_10','lembrete_13','lembrete_15','lembrete_16','lembrete_20','lembrete_dia','lembrete_2h'].includes(n.tipo)) {
         const { data: a } = await db.from('evento_funcionarios').select('ativo,resposta,evento:eventos(estado)').eq('id', n.evento_funcionario_id).maybeSingle();
         if (!a || !a.ativo || a.resposta !== 'aceite' || a.evento?.estado === 'cancelado') {
           await db.from('notificacoes').update({ cancelada: true }).eq('id', n.id); skipped++; continue;

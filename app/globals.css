@@ -1247,11 +1247,9 @@ img {
   margin: 24px 0;
   border: 1px solid rgba(166, 113, 83, .25);
   border-radius: 16px;
-  background: linear-gradient(
-    120deg,
-    rgba(166, 113, 83, .12),
-    rgba(217, 159, 89, .04)
-  );
+  background: linear-gradient(120deg,
+      rgba(166, 113, 83, .12),
+      rgba(217, 159, 89, .04));
 }
 
 .event-banner-icon {
@@ -1298,7 +1296,7 @@ img {
   flex-direction: column;
   gap: 5px;
   padding: 13px 0;
-  border-bottom: 1px solid rgba(128,128,128,.15);
+  border-bottom: 1px solid rgba(128, 128, 128, .15);
 }
 
 .event-date span {
@@ -1322,7 +1320,7 @@ img {
     width: 100%;
   }
 
-  .event-actions > * {
+  .event-actions>* {
     flex: 1;
     justify-content: center;
   }
@@ -1340,3 +1338,161 @@ img {
 
 
 /*brand*/
+
+/* PWA installation */
+.pwa-install-button {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 16px;
+  border: 1px solid rgba(233, 239, 166, .35);
+  border-radius: 999px;
+  background: #171717;
+  color: #f5f5f5;
+  font: 600 13px inherit;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .28);
+  cursor: pointer
+}
+
+.pwa-install-button img {
+  width: 25px;
+  height: 25px;
+  border-radius: 7px
+}
+
+.pwa-install-button:hover {
+  transform: translateY(-2px)
+}
+
+.pwa-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, .68);
+  display: grid;
+  place-items: center;
+  padding: 18px
+}
+
+.pwa-modal {
+  position: relative;
+  width: min(100%, 520px);
+  max-height: 88vh;
+  overflow: auto;
+  background: #171717;
+  color: #f5f5f5;
+  border: 1px solid rgba(233, 239, 166, .2);
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .4)
+}
+
+.pwa-modal h2 {
+  margin: 10px 0
+}
+
+.pwa-modal p,
+.pwa-modal small {
+  color: #b9b9b9;
+  line-height: 1.55
+}
+
+.pwa-modal-logo {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px
+}
+
+.pwa-close {
+  position: absolute;
+  right: 15px;
+  top: 12px;
+  background: transparent;
+  color: #fff;
+  border: 0;
+  font-size: 28px;
+  cursor: pointer
+}
+
+.pwa-steps {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 15px
+}
+
+.pwa-steps li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start
+}
+
+.pwa-steps li>span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #e9efa6;
+  color: #171717;
+  font-weight: 700
+}
+
+.pwa-steps li p {
+  margin: 4px 0
+}
+
+.pwa-steps li img {
+  display: block;
+  max-width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+  object-position: left;
+  border-radius: 9px;
+  margin-top: 8px
+}
+
+.pwa-install-confirm {
+  margin-top: 16px;
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px;
+  background: #e9efa6;
+  color: #171717;
+  font-weight: 700;
+  cursor: pointer
+}
+
+@media(max-width:600px) {
+  .pwa-install-button {
+    right: 12px;
+    bottom: 12px;
+    padding: 10px 13px
+  }
+
+  .pwa-modal {
+    padding: 22px 18px
+  }
+}
+/* PWA: imagens de ajuda para instalação no iPhone */
+.pwa-steps li img {
+  width: 100%;
+  height: auto;
+  max-height: 210px;
+  object-fit: contain;
+  background: #242424;
+}
+.pwa-intro { margin-bottom: 14px; }
+.pwa-tip {
+  padding: 11px 13px;
+  border: 1px solid rgba(233, 239, 166, .28);
+  border-radius: 10px;
+  background: rgba(233, 239, 166, .07);
+  color: #e9efa6 !important;
+}
+.pwa-install-button { font-family: inherit; }

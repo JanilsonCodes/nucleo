@@ -159,8 +159,8 @@ async function scheduleReminders(db, accountId, event, assignmentId = null) {
   const previousDay = getCVDate(previousDayDate);
 
   const recipients = [
-    { hour: 8, type: "lembrete_08" },
-    { hour: 13, type: "lembrete_13" },
+    { hour: 10, type: "lembrete_10" },
+    { hour: 16, type: "lembrete_16" },
     { hour: 20, type: "lembrete_20" },
   ];
 
